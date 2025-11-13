@@ -20,18 +20,35 @@ vector<vector<int>> transpose(vector<vector<int>> matrix){
     return ret_matrix;
 }
 
+vector<vector<int>> matrixmul(vector<vector<int>> a, vector<vector<int>> b) {
+    int a_rows = a.size();
+    int a_cols = a[0].size();
+    int b_rows = b.size();
+    int b_cols = b[0].size();
+    vector<vector<int>> res(a_rows, vector<int>(b_cols, 0));
+    if(a_cols != b_rows){
+        std::cout << "Incorrect matrice dimensions." << endl;
+    }
+    else {
+        for (int i = 0; i < a_rows; i++) {
+            for (int j = 0; j < b_cols; j++) {
+                long long acc = 0;
+                for (int k = 0; k < a_cols; k++) { // same as b_rows
+                    acc += a[i][k] * b[k][j];
+                }
+                res[i][j] = (int) acc;
+            }
+        }
+    }
+    return res;
+}
+
 int main(){
 
-    vector<vector<int>> matrix = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-    for (const auto& row : matrix) {
-        // Iterate through each element in the current inner vector (column)
-        for (int element : row) {
-            std::cout << element << " ";
-        }
-        std::cout << std::endl; // Newline after each row
-    }
+    vector<vector<int>> matrix1 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+    vector<vector<int>> matrix2 = {{10, 11, 12}, {13, 14, 15}, {16, 17, 18}};
 
-    vector<vector<int>> temp = transpose(matrix);
+    vector<vector<int>> temp = matrixmul(matrix1, matrix2);
     for (const auto& row : temp) {
         // Iterate through each element in the current inner vector (column)
         for (int element : row) {
