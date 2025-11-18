@@ -6,10 +6,10 @@ using namespace std;
 vector<vector<int>> transpose(vector<vector<int>> matrix){
     int rows = matrix.size();
     int cols = matrix[0].size();
-    vector<vector<int>> ret_matrix(rows, vector<int>(cols, 0));
+    vector<vector<int>> ret_matrix(cols, vector<int>(rows, 0));
     for(int i = 0; i < rows; i++){
         for(int j = 0; j < cols; j++){
-            ret_matrix[i][j] = matrix[j][i];
+            ret_matrix[j][i] = matrix[i][j];
         }
     }
     return ret_matrix;
@@ -117,16 +117,17 @@ vector<vector<int>> conjugate_gradient(vector<vector<int>> A, vector<vector<int>
 
 int main(){
 
-    vector<vector<int>> matrix1 = {{3, -2}, {-2, 4}};
-    vector<vector<int>> matrix2 = {{1}, {1}};
+    vector<vector<int>> matrix1 = {{3, -1}, {-2, 4}};
+    vector<vector<int>> matrix2 = {{19}, {10}};
 
-    vector<vector<int>> temp = conjugate_gradient(matrix1, matrix2);
+    vector<vector<int>> temp = transpose(matrix2);
+    std::cout << "transpose" << endl;
     for (const auto& row : temp) {
         // Iterate through each element in the current inner vector (column)
         for (int element : row) {
             std::cout << element << " ";
         }
-        std::cout << std::endl; // Newline after each row
+        std::cout << std::endl;
     }
 
     return 0;
