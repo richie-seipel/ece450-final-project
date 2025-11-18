@@ -120,10 +120,9 @@ int main(){
     vector<vector<int>> matrix1 = {{3, -1}, {-2, 4}};
     vector<vector<int>> matrix2 = {{19}, {10}};
 
-    vector<vector<int>> temp = transpose(matrix2);
+    vector<vector<int>> temp = conjugate_gradient(matrix1, matrix2);
     std::cout << "transpose" << endl;
     for (const auto& row : temp) {
-        // Iterate through each element in the current inner vector (column)
         for (int element : row) {
             std::cout << element << " ";
         }
