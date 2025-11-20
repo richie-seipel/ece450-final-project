@@ -75,39 +75,40 @@ vector<vector<int>> sub_mat(vector<vector<int>> a, vector<vector<int>> b){
 }
 
 //main function
+//p -> search direction
+//r -> residual
 vector<vector<int>> conjugate_gradient(vector<vector<int>> A, vector<vector<int>> b){
     //add checking if sizes are correct
     int x_size = A.size();
-    vector<vector<int>> x(x_size, vector<int>(1, 0));
+    vector<vector<int>> x(x_size, vector<int>(1, 1));
 
     vector<vector<int>> Ax = matrixmul(A, x);
-    vector<vector<int>> residual = sub_mat(b, Ax);
-    vector<vector<int>> search_dir = residual;
-    vector<vector<int>> residual_t = transpose(residual);
-    int rt_r =  matrixmul(residual_t, residual)[0][0];
+    vector<vector<int>> r = sub_mat(b, Ax);
+    vector<vector<int>> p = r;
+    vector<vector<int>> r_t = transpose(r);
+    int r_tr =  matrixmul(r_t, r)[0][0];
 
     //iterations = order of matrix
     for(int index = 0; index < A.size(); index++){
-        vector<vector<int>> search_dir_t = transpose(search_dir);
-        vector<vector<int>> search_dir_A = matrixmul(search_dir, A);
-        int alpha_denom = matrixmul(search_dir_t, search_dir_A)[0][0];
-        int alpha = rt_r/alpha_denom;
+        vector<vector<int>> p_t = transpose(p);
+        vector<vector<int>> Ap = matrixmul(A, p);
+        int alpha_denom = matrixmul(p_t, Ap)[0][0];
+        int alpha = r_tr/alpha_denom;
 
-        //x(n+1) = x(n) + alpha(n)*search_dir(n)
-        vector<vector<int>> alpha_times_sdir = scalar_matrixmul(alpha, search_dir);
+        //x(n+1) = x(n) + alpha(n)*p(n)
+        vector<vector<int>> alphap = scalar_matrixmul(alpha, p);
         //reassign to x
-        x = add_mat(x, alpha_times_sdir);
-        vector<vector<int>> Aresidual = matrixmul(A, residual);
-        vector<vector<int>> alpha_times_Aresidual = scalar_matrixmul(alpha, Aresidual);
-        residual = sub_mat(residual, alpha_times_Aresidual);
+        x = add_mat(x, alphap);
+        vector<vector<int>> alphaAp = scalar_matrixmul(alpha, Ap);
+        r = sub_mat(r, alphaAp);
 
-        vector<vector<int>> new_residual_t = transpose(residual);
-        int new_rt_r = matrixmul(new_residual_t, residual)[0][0];
+        vector<vector<int>> new_r_t = transpose(r);
+        int new_r_tr = matrixmul(new_r_t, r)[0][0];
 
-        vector<vector<int>> rt_r_diffsearch_dir = scalar_matrixmul((new_rt_r/rt_r), search_dir);
-        search_dir = add_mat(residual, rt_r_diffsearch_dir);
+        vector<vector<int>> r_tr_diffp = scalar_matrixmul((new_r_tr/r_tr), p);
+        p = add_mat(r, r_tr_diffp);
 
-        rt_r = new_rt_r;
+        r_tr = new_r_tr;
          
     }
 
@@ -117,11 +118,11 @@ vector<vector<int>> conjugate_gradient(vector<vector<int>> A, vector<vector<int>
 
 int main(){
 
-    vector<vector<int>> matrix1 = {{3, -1}, {-2, 4}};
-    vector<vector<int>> matrix2 = {{19}, {10}};
+    vector<vector<int>> matrix1 = {{4, 1}, {1, 3}};
+    vector<vector<int>> matrix2 = {{1}, {2}};
 
     vector<vector<int>> temp = conjugate_gradient(matrix1, matrix2);
-    std::cout << "transpose" << endl;
+    std::cout << "conjugate gradient" << endl;
     for (const auto& row : temp) {
         for (int element : row) {
             std::cout << element << " ";
