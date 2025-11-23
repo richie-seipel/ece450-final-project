@@ -1,133 +1,102 @@
 #include <iostream>
-#include <vector>
 using namespace std;
 
-//function to transpose a matrix
-vector<vector<double>> transpose(vector<vector<double>> matrix){
-    int rows = matrix.size();
-    int cols = matrix[0].size();
-    vector<vector<double>> ret_matrix(cols, vector<double>(rows, 0));
-    for(int i = 0; i < rows; i++){
-        for(int j = 0; j < cols; j++){
-            ret_matrix[j][i] = matrix[i][j];
-        }
+const int N = 2;
+
+double dot_product(double a[N], double b[N]){
+    double acc = 0;
+    for (int i = 0; i < N; i++){
+        acc += a[i] * b[i];
     }
-    return ret_matrix;
+    return acc;
 }
 
-vector<vector<double>> matrixmul(vector<vector<double>> a, vector<vector<double>> b) {
-    int a_rows = a.size();
-    int a_cols = a[0].size();
-    int b_rows = b.size();
-    int b_cols = b[0].size();
-    vector<vector<double>> res(a_rows, vector<double>(b_cols, 0));
-    if(a_cols != b_rows){
-        std::cout << "Incorrect matrice dimensions." << endl;
-    }
-    else {
-        for(int i = 0; i < a_rows; i++) {
-            for(int j = 0; j < b_cols; j++) {
-                double acc = 0;
-                for (int k = 0; k < a_cols; k++) { // same as b_rows
-                    acc += a[i][k] * b[k][j];
-                }
-                res[i][j] = (double) acc;
-            }
+void matrixmul(double a[N][N], double b[N], double c[N]) {
+    for(int i = 0; i < N; i++) {
+        double acc = 0;
+        for(int j = 0; j < N; j++) {
+            acc += a[i][j] * b[j];
         }
+        c[i] = (double) acc;
     }
-    return res;
 }
 
-vector<vector<double>> scalar_matrixmul(double val, vector<vector<double>> A){
-    int rows = A.size();
-    int cols = A[0].size();
-    vector<vector<double>> res(rows, vector<double>(cols, 0));
-    for(int i = 0; i < rows; i++) {
-        for(int j = 0; j < cols; j++) {
-            res[i][j] = A[i][j] * val;
-        }
+void scalar_matrixmul(double val, double A[N], double res[N]){
+    for(int i = 0; i < N; i++) {
+        res[i] = A[i] * val;
     }
-    return res;
 }
 
-vector<vector<double>> add_mat(vector<vector<double>> a, vector<vector<double>> b){
-    vector<vector<double>> res(a.size(), vector<double>(b[0].size(), 0));
-    if((a.size() == b.size()) && (a[0].size() == b[0].size())){
-        for(int i = 0; i < a.size(); i++){
-            for(int j = 0; j < a[0].size(); j++) {
-                res[i][j] = a[i][j] + b[i][j];
-            }
-        }
+void add_mat(double a[N], double b[N], double res[N]){
+    for(int i = 0; i < N; i++){
+        res[i] = a[i] + b[i];
     }
-    return res;
 }
 
-vector<vector<double>> sub_mat(vector<vector<double>> a, vector<vector<double>> b){
-    vector<vector<double>> res(a.size(), vector<double>(b[0].size(), 0));
-    if((a.size() == b.size()) && (a[0].size() == b[0].size())){
-        for(int i = 0; i < a.size(); i++){
-            for(int j = 0; j < a[0].size(); j++) {
-                res[i][j] = a[i][j] - b[i][j];
-            }
-        }
+void sub_mat(double a[N], double b[N], double res[N]){
+    for(int i = 0; i < N; i++){
+        res[i] = a[i] - b[i];
     }
-    return res;
+}
+
+void copy_mat(double a[N], double res[N]){
+    for(int i = 0; i < N; i++){
+        res[i] = a[i];
+    }
 }
 
 //main function
 //p -> search direction
 //r -> residual
-vector<vector<double>> conjugate_gradient(vector<vector<double>> A, vector<vector<double>> b){
-    //add checking if sizes are correct
-    double x_size = A.size();
-    vector<vector<double>> x(x_size, vector<double>(1, 1));
-
-    vector<vector<double>> Ax = matrixmul(A, x);
-    vector<vector<double>> r = sub_mat(b, Ax);
-    vector<vector<double>> p = r;
-    vector<vector<double>> r_t = transpose(r);
-    double r_tr =  matrixmul(r_t, r)[0][0];
+void conjugate_gradient(double A[N][N], double b[N], double x[N]){
+    double Ax[N];
+    matrixmul(A, x, Ax);
+    double r[N];
+    sub_mat(b, Ax, r);
+    double p[N];
+    copy_mat(r, p);
+    double r_dot = dot_product(r, r);
 
     //iterations = order of matrix
-    for(int index = 0; index < A.size(); index++){
-        vector<vector<double>> p_t = transpose(p);
-        vector<vector<double>> Ap = matrixmul(A, p);
-        double alpha_denom = matrixmul(p_t, Ap)[0][0];
-        double alpha = r_tr/alpha_denom;
+    for(int index = 0; index < N; index++){
+        double Ap[N];
+        matrixmul(A, p, Ap);
+        double alpha = r_dot/dot_product(p, Ap);
 
         //x(n+1) = x(n) + alpha(n)*p(n)
-        vector<vector<double>> alphap = scalar_matrixmul(alpha, p);
+        double alphap[N];
+        scalar_matrixmul(alpha, p, alphap);
         //reassign to x
-        x = add_mat(x, alphap);
-        vector<vector<double>> alphaAp = scalar_matrixmul(alpha, Ap);
-        r = sub_mat(r, alphaAp);
+        add_mat(x, alphap, x);
+        double alphaAp[N];
+        scalar_matrixmul(alpha, Ap, alphaAp);
+        sub_mat(r, alphaAp, r);
 
-        vector<vector<double>> new_r_t = transpose(r);
-        double new_r_tr = matrixmul(new_r_t, r)[0][0];
+        double new_r_dot = dot_product(r,r);
 
-        vector<vector<double>> r_tr_diffp = scalar_matrixmul((new_r_tr/r_tr), p);
-        p = add_mat(r, r_tr_diffp);
+        double beta = new_r_dot/r_dot;
 
-        r_tr = new_r_tr;
+        double beta_p[N];
+        scalar_matrixmul(beta, p, beta_p);
+        add_mat(r, beta_p, p);
+
+        r_dot = new_r_dot;
          
     }
-
-    return x;
 
 }
 
 int main(){
 
-    vector<vector<double>> matrix1 = {{4, 1}, {1, 3}};
-    vector<vector<double>> matrix2 = {{1}, {2}};
+    double matrix1[N][N] = {{4, 1}, {1, 3}};
+    double matrix2[N] = {{1}, {2}};
+    //initial guess
+    double result[N] = {0, 0};
 
-    vector<vector<double>> temp = conjugate_gradient(matrix1, matrix2);
+    conjugate_gradient(matrix1, matrix2, result);
     std::cout << "conjugate gradient" << endl;
-    for (const auto& row : temp) {
-        for (double element : row) {
+    for (const auto& element : result) {
             std::cout << element << " ";
-        }
-        std::cout << std::endl;
     }
 
     return 0;

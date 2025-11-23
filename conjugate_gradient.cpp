@@ -3,15 +3,6 @@ using namespace std;
 
 const int N = 2;
 
-//function to transpose a matrix
-void transpose(double matrix[N][N], double ret_matrix[N][N]){
-    for(int i = 0; i < N; i++){
-        for(int j = 0; j < N; j++){
-            ret_matrix[j][i] = matrix[i][j];
-        }
-    }
-}
-
 double dot_product(double a[N], double b[N]){
     double acc = 0;
     for (int i = 0; i < N; i++){
@@ -68,13 +59,8 @@ void conjugate_gradient(double A[N][N], double b[N], double x[N]){
 
     //iterations = order of matrix
     for(int index = 0; index < N; index++){
-        //double p_t[N][N];
-        //transpose(p, p_t);
         double Ap[N];
         matrixmul(A, p, Ap);
-        //double alpha_denom_mat[N][N];
-        //matrixmul(p_t, Ap, alpha_denom_mat);
-        //double alpha_denom = alpha_denom_mat[0][0];
         double alpha = r_dot/dot_product(p, Ap);
 
         //x(n+1) = x(n) + alpha(n)*p(n)
@@ -87,21 +73,12 @@ void conjugate_gradient(double A[N][N], double b[N], double x[N]){
         sub_mat(r, alphaAp, r);
 
         double new_r_dot = dot_product(r,r);
-        //transpose(r, new_r_t);
-        //double new_r_tr_mat[N][N]; 
-        //matrixmul(new_r_t, r, new_r_tr_mat);
-        //double new_r_tr = new_r_tr_mat[0][0];
+
         double beta = new_r_dot/r_dot;
 
         double beta_p[N];
         scalar_matrixmul(beta, p, beta_p);
         add_mat(r, beta_p, p);
-
-        //double r_tr_diffp[N][N];
-        //scalar_matrixmul((new_r_tr/r_tr), p, r_tr_diffp);
-        //double r_plus_r_tr_diffp[N][N];
-        //add_mat(r, r_tr_diffp, r_plus_r_tr_diffp);
-        //copy_mat(r_plus_r_tr_diffp, p);
 
         r_dot = new_r_dot;
          
