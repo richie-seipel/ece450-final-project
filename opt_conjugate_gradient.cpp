@@ -1,14 +1,17 @@
 #include "conjugate_gradient.h"
 
 double dot_product(double a[N], double b[N]){
+	#pragma HLS INLINE
     double acc = 0;
     for (int i = 0; i < N; i++){
+		//#pragma HLS UNROLL
         acc += a[i] * b[i];
     }
     return acc;
 }
 
 void matrixmul(double a[N][N], double b[N], double c[N]) {
+    #pragma HLS INLINE
     for(int i = 0; i < N; i++) {
         double acc = 0;
         for(int j = 0; j < N; j++) {
@@ -19,25 +22,33 @@ void matrixmul(double a[N][N], double b[N], double c[N]) {
 }
 
 void scalar_matrixmul(double val, double A[N], double res[N]){
+    #pragma HLS INLINE
     for(int i = 0; i < N; i++) {
+        #pragma HLS UNROLL
         res[i] = A[i] * val;
     }
 }
 
 void add_mat(double a[N], double b[N], double res[N]){
+    #pragma HLS INLINE
     for(int i = 0; i < N; i++){
+        #pragma HLS UNROLL
         res[i] = a[i] + b[i];
     }
 }
 
 void sub_mat(double a[N], double b[N], double res[N]){
+    #pragma HLS INLINE
     for(int i = 0; i < N; i++){
+        #pragma HLS UNROLL
         res[i] = a[i] - b[i];
     }
 }
 
 void copy_mat(double a[N], double res[N]){
+    #pragma HLS INLINE
     for(int i = 0; i < N; i++){
+        #pragma HLS UNROLL
         res[i] = a[i];
     }
 }
@@ -46,6 +57,14 @@ void copy_mat(double a[N], double res[N]){
 //p -> search direction
 //r -> residual
 void conjugate_gradient(double A[N][N], double b[N], double x[N]){
+    #pragma HLS INLINE off
+	#pragma HLS ARRAY_PARTITION variable=A complete dim=2
+	#pragma HLS ARRAY_PARTITION variable=b complete
+	#pragma HLS ARRAY_PARTITION variable=x complete
+    #pragma HLS INTERFACE ap_none port=A
+	#pragma HLS INTERFACE ap_none port=b
+	#pragma HLS INTERFACE ap_none port=x
+	#pragma HLS INTERFACE ap_ctrl_none port=return
     double Ax[N];
     matrixmul(A, x, Ax);
     double r[N];
