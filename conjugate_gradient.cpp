@@ -24,7 +24,7 @@ void matrixmul(double a[N][N], double b[N], double c[N]) {
     for(int i = 0; i < N; i++) {
         double acc = 0;
         for(int j = 0; j < N; j++) {
-            acc += a[i][j] * b[i];
+            acc += a[i][j] * b[j];
         }
         c[i] = (double) acc;
     }
@@ -50,7 +50,7 @@ void sub_mat(double a[N], double b[N], double res[N]){
 
 void copy_mat(double a[N], double res[N]){
     for(int i = 0; i < N; i++){
-        a[i] = res[i];
+        res[i] = a[i];
     }
 }
 
@@ -91,7 +91,7 @@ void conjugate_gradient(double A[N][N], double b[N], double x[N]){
         //double new_r_tr_mat[N][N]; 
         //matrixmul(new_r_t, r, new_r_tr_mat);
         //double new_r_tr = new_r_tr_mat[0][0];
-        double beta = r_dot/new_r_dot;
+        double beta = new_r_dot/r_dot;
 
         double beta_p[N];
         scalar_matrixmul(beta, p, beta_p);
@@ -113,7 +113,8 @@ int main(){
 
     double matrix1[N][N] = {{4, 1}, {1, 3}};
     double matrix2[N] = {{1}, {2}};
-    double result[N];
+    //initial guess
+    double result[N] = {0, 0};
 
     conjugate_gradient(matrix1, matrix2, result);
     std::cout << "conjugate gradient" << endl;
