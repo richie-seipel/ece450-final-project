@@ -1,7 +1,4 @@
-#include <iostream>
-using namespace std;
-
-const int N = 2;
+#include "conjugate_gradient.h"
 
 double dot_product(double a[N], double b[N]){
     double acc = 0;

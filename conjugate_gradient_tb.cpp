@@ -1,4 +1,4 @@
-#include "conjugate_gradient.cpp"
+#include "conjugate_gradient.h"
 
 int main(){
     double matrix1[N][N] = {{4, 1}, {1, 3}};
