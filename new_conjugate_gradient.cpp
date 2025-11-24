@@ -1,4 +1,3 @@
-#include <hls_stream.h>
 #include <math.h>
 #include <stdio.h>
 
@@ -6,7 +5,7 @@
 //#define MAX_ITER 4//shoulbe equal to N
 typedef float data_t;
 
-void cg(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
+void conjugate_gradient(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
 
     data_t r[N], p[N], Ap[N];
     data_t rsold, rsnew, alpha, beta, pAp;
@@ -23,7 +22,6 @@ void cg(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
     rsold = 0;
     for (int i = 0; i < N; i++) rsold += r[i] * r[i];
 
-    cg_loop:
     for (int k = 0; k < N; k++) {
         // Ap = A * p
         for (int i = 0; i < N; i++) {
