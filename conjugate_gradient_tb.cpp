@@ -1,6 +1,4 @@
-#include "new_conjugate_gradient.cpp"
-#include <iostream>
-#define N 4
+#include "new_conjugate_gradient.h"
 
 int main(){
     float matrix1[N][N] = {{2, 1, 0, 0}, {1, 2, 1, 0}, {0, 1, 2, 1}, {0, 0, 1, 2}};

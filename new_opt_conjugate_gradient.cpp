@@ -1,12 +1,6 @@
-#include <hls_stream.h>
-#include <math.h>
-#include <stdio.h>
+#include "new_conjugate_gradient.h"
 
-#define N 4               // Matrix dimension (4x4 )
-//#define MAX_ITER 4//shoulbe equal to N
-typedef float data_t;
-
-void cg(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
+void conjugate_gradient(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
 #pragma HLS ARRAY_PARTITION variable=A complete dim=2
 #pragma HLS ARRAY_PARTITION variable=A complete dim=1
 #pragma HLS PIPELINE
