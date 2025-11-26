@@ -2,8 +2,11 @@
 
 void conjugate_gradient(data_t A[N][N], data_t b[N], data_t x[N], data_t tol) {
 #pragma HLS ARRAY_PARTITION variable=A complete dim=2
-#pragma HLS ARRAY_PARTITION variable=A complete dim=1
-#pragma HLS PIPELINE
+#pragma HLS ARRAY_PARTITION variable=b complete dim=1
+#pragma HLS INTERFACE ap_none port=A
+#pragma HLS INTERFACE ap_none port=b
+#pragma HLS INTERFACE ap_none port=x
+#pragma HLS INTERFACE ap_ctrl_none port=return
 
     data_t r[N], p[N], Ap[N];
     data_t rsold, rsnew, alpha, beta, pAp;
