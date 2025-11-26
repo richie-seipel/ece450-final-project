@@ -1,6 +1,6 @@
 #include "new_conjugate_gradient.h"
 
-void generate_spd_matrix(data_t A[N][N]) {
+void generate_matrix(data_t A[N][N]) {
     //fill matrix
     for (int i = 0; i < N; i++){
         for (int j = 0; j < N; j++){
@@ -19,7 +19,7 @@ void generate_spd_matrix(data_t A[N][N]) {
 
 int main(){
     float matrix1[N][N];
-    generate_spd_matrix(matrix1);
+    generate_matrix(matrix1);
     float matrix2[N];
     //initial guess
     float result[N];
